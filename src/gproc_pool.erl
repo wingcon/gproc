@@ -345,7 +345,7 @@ pick(Pool, Sz, round_robin) ->
 	    end
     end;
 pick(Pool, Sz, random) ->
-    pick_near(Pool, crypto:rand_uniform(1, Sz + 1)).
+    pick_near(Pool, rand:uniform(Sz + 1)).
 
 pick(Pool, Sz, hash, Val) ->
     pick_near(Pool, erlang:phash2(Val, Sz) + 1);
@@ -451,7 +451,7 @@ randomize(Pool) ->
 	0 -> 0;
 	1 -> 1;
 	Sz ->
-	    incr(Pool, crypto:rand_uniform(0, Sz), Sz)
+	    incr(Pool, rand:uniform(Sz), Sz)
     end.
 
 %% @spec pool_size(Pool::any()) -> integer()
@@ -493,7 +493,7 @@ handle_call(Req, From, S) ->
     try handle_call_(Req, From, S)
     catch
 	error:Reason ->
-	    io:fwrite("server backtrace: ~p~n", [erlang:get_stacktrace()]),
+	    io:fwrite("server backtrace: ~p~n", [[]]),
 	    {reply, {badarg, Reason}, S}
     end.
 
@@ -918,7 +918,7 @@ test_run(N, P, S, M) when N > 0 ->
     {T, Worker} = timer:tc(?MODULE, pick, [P]),
     true = (Worker =/= false),
     log(Worker),
-    timer:sleep(crypto:rand_uniform(1,50)),
+    timer:sleep(rand:uniform(50)),
     test_run(N-1, P, S+T, M+1);
 test_run(_, _, S, M) ->
     S/M.
@@ -930,7 +930,7 @@ test_run1(N, P, S, M) when N > 0 ->
     {T, Worker} = timer:tc(?MODULE, pick, [P, N]),
     true = (Worker =/= false),
     log(Worker),
-    timer:sleep(crypto:rand_uniform(1,50)),
+    timer:sleep(rand:uniform(50)),
     test_run1(N-1, P, S+T, M+1);
 test_run1(_, _, S, M) ->
     S/M.
@@ -941,7 +941,7 @@ test_run2(N, P) ->
 
 test_run2(N, P, F, S, M) when N > 0 ->
     {T, {true, _}} = timer:tc(?MODULE, claim, [P, F]),
-    timer:sleep(crypto:rand_uniform(1,50)),
+    timer:sleep(rand:uniform(50)),
     test_run2(N-1, P, F, S+T, M+1);
 test_run2(_, _, _, S, M) ->
     S/M.
