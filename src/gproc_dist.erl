@@ -439,7 +439,7 @@ handle_leader_call({reset_counter, {c,g,_Ctr} = Key, Pid}, _From, S, _E) ->
 	 {reply, {Current, New}, [{insert, Vals}], S}
     catch
 	error:_R ->
-	    io:fwrite("reset_counter failed: ~p~n~p~n", [_R, erlang:get_stacktrace()]),
+	    io:fwrite("reset_counter failed: ~p~n~p~n", [_R, []]),
 	    {reply, badarg, S}
     end;
 handle_leader_call({unreg, {T,g,Name} = K, Pid}, _From, S, _E) ->
